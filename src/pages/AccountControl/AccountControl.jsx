@@ -1,0 +1,299 @@
+// src/pages/AccountControl/AccountControl.jsx
+import React, { useState } from "react";
+import AccountTabs from "../../components/AccountControlComponents/AccountTabs/AccountTabs";
+import RegisterInformation from "../../components/AccountControlComponents/RegisterInformation/RegisterInformation";
+import DeleteAccount from "../../components/AccountControlComponents/DeleteAccount/DeleteAccount";
+import "./AccountControl.css";
+
+// Toastify
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// Mock data
+const mockAccounts = {
+  verification: [
+    {
+      id: 1,
+      name: "Juan Dela Cruz",
+      type: "School",
+      school: "Binan Integrated HS",
+      email: "example@deped.edu.ph",
+      phone: "+63 9123456789",
+      address: "Purok 3 Brgy. Sto. Tomas, Biñan City, Laguna, 4024",
+    },
+    {
+      id: 2,
+      name: "Maria Santos",
+      type: "Focal",
+      email: "maria@deped.edu.ph",
+      phone: "+63 9234567890",
+      address: "San Antonio HS",
+    },
+    {
+      id: 3,
+      name: "Pedro Ramos",
+      type: "School",
+      school: "San Antonio HS",
+      email: "pedro@deped.edu.ph",
+      phone: "+63 9345678901",
+      address: "San Antonio HS",
+    },
+    {
+      id: 4,
+      name: "Ana Cruz",
+      type: "Focal",
+      email: "ana@deped.edu.ph",
+      phone: "+63 9456789012",
+      address: "Focal Office",
+    },
+  ],
+  termination: [
+    { id: 5, name: "Pedro Reyes", school: "Binan Integrated HS", type: "School" },
+    { id: 6, name: "Ana Cruz", school: "San Antonio HS", type: "Focal" },
+  ],
+  designation: [
+    { id: 7, name: "Isidra L. Galman", section: "School Management & Eval Section" },
+    { id: 8, name: "Edward R. Manuel", section: "Planning & Research Section" },
+    { id: 9, name: "Charles M. Patio", section: "Planning & Research Section" },
+    { id: 10, name: "Artnafe N. Ode", section: "Planning & Research Section" },
+    { id: 11, name: "Arletta P. Alora", section: "Human Resource Development Section" },
+    { id: 12, name: "Mary Joy L. Cabiles", section: "Human Resource Development Section" },
+    { id: 13, name: "Donna Jane M. Alfonso", section: "Social Mobilization and Networking Section" },
+    { id: 14, name: "Eva Joyce V. Cabantog", section: "Social Mobilization and Networking Section" },
+    { id: 15, name: "Precious Joy A. Coronado", section: "Education Facilities Section" },
+  ],
+};
+
+// Mock sections for dropdown
+const sections = [
+  "School Management & Eval Section",
+  "Planning & Research Section",
+  "Human Resource Development Section",
+  "Social Mobilization and Networking Section",
+  "Education Facilities Section",
+  "Disaster Risk Reduction and Management",
+  "School Health",
+  "Youth Formation",
+];
+
+// ✅ Get first initial
+const getInitials = (name) => {
+  if (!name) return "??";
+  const parts = name.trim().split(" ").filter(part => part.length > 0);
+  const first = parts[0]?.charAt(0) || "";
+  const last = parts[parts.length - 1]?.charAt(0) || "";
+  return (first + last).toUpperCase();
+};
+
+// ✅ Generate consistent color from name (looks random, but stable)
+const stringToColor = (str) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const hue = hash % 360;
+  const saturation = 60 + (hash % 20);
+  const lightness = 50 + (hash % 10);
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+};
+
+const AccountControl = () => {
+  const [activeTab, setActiveTab] = useState("verification");
+  const [sortFilter, setSortFilter] = useState("All");
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editedSection, setEditedSection] = useState({});
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setSortFilter("All");
+  };
+
+  const handleSortChange = (e) => {
+    setSortFilter(e.target.value);
+  };
+
+  const handleInspect = (account) => {
+    setSelectedAccount(account);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedAccount(null);
+  };
+
+  const handleDeny = () => {
+    handleCloseModal();
+  };
+
+  const handleVerify = () => {
+    toast.success("Account verified!", { autoClose: 1000 });
+    setTimeout(handleCloseModal, 100);
+  };
+
+  const handleDeleteConfirm = () => {
+    toast.error(`${accountToDelete?.name} has been deleted.`);
+    setIsDeleteModalOpen(false);
+    setAccountToDelete(null);
+  };
+
+  const handleEditClick = (id) => {
+    setEditingId(id);
+    setEditedSection((prev) => ({
+      ...prev,
+      [id]: prev[id] || mockAccounts.designation.find(acc => acc.id === id)?.section,
+    }));
+  };
+
+  const handleSaveClick = (id) => {
+    console.log(`Saving section for ${id}:`, editedSection[id]);
+    toast.success("Section updated!");
+    setEditingId(null);
+  };
+
+  const handleSectionChange = (id, value) => {
+    setEditedSection((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  // Pick account based on tab
+  let accounts = mockAccounts[activeTab] || [];
+
+  // Apply filter for verification & termination
+  if (activeTab === "verification" || activeTab === "termination") {
+    if (sortFilter !== "All") {
+      accounts = accounts.filter((acc) => acc.type === sortFilter);
+    }
+  }
+
+  return (
+    <div className="account-control">
+      {/* Tabs */}
+      <AccountTabs onTabChange={handleTabChange} />
+
+      {/* Filter only for verification & termination */}
+      {(activeTab === "verification" || activeTab === "termination") && (
+        <div className="account-filter">
+          <select value={sortFilter} onChange={handleSortChange}>
+            <option value="All">All Accounts</option>
+            <option value="School">School</option>
+            <option value="Focal">Focals</option>
+          </select>
+        </div>
+      )}
+
+      {/* Account list */}
+      <div className="account-list">
+        {accounts.map((acc) => (
+          <div key={acc.id} className={`account-item ${activeTab}`}>
+            {/* Left column: avatar + name (+ meta for non-designation) */}
+            <div className="account-info">
+              <div 
+                className="account-avatar" 
+                style={{ backgroundColor: stringToColor(acc.name) }}
+              >
+                {getInitials(acc.name)}
+              </div>
+              <div className="account-content">
+                <div className="account-name">{acc.name}</div>
+
+                {/* Only show meta under the name for verification/termination */}
+                {(activeTab === "verification" || activeTab === "termination") && (
+                  <div className="account-meta">
+                    {acc.type === "School" ? acc.school : "Focal"}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Middle column: section (designation only) */}
+            {activeTab === "designation" && (
+              <div className="account-section">
+                {editingId === acc.id ? (
+                  <select
+                    value={editedSection[acc.id]}
+                    onChange={(e) => handleSectionChange(acc.id, e.target.value)}
+                    className="edit-select"
+                  >
+                    {sections.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  acc.section
+                )}
+              </div>
+            )}
+
+            {/* Right column: action button */}
+            <div className="account-action">
+              {activeTab === "verification" && (
+                <button className="inspect-btn" onClick={() => handleInspect(acc)}>
+                  Inspect
+                </button>
+              )}
+              {activeTab === "termination" && (
+                <button
+                  className="delete-btn"
+                  onClick={() => {
+                    setAccountToDelete(acc);
+                    setIsDeleteModalOpen(true);
+                  }}
+                >
+                  Delete Account
+                </button>
+              )}
+              {activeTab === "designation" && (
+                <button
+                  className={editingId === acc.id ? "save-btn" : "edit-btn"}
+                  onClick={editingId === acc.id ? () => handleSaveClick(acc.id) : () => handleEditClick(acc.id)}
+                >
+                  {editingId === acc.id ? "Save" : "Edit"}
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ✅ Register Information Modal */}
+      <RegisterInformation
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title="Registered Information"
+        onDeny={handleDeny}
+        onVerify={handleVerify}
+      >
+        <div className="modal-details">
+          <p><strong>Registered as:</strong> {selectedAccount?.type}</p>
+          <p><strong>Name:</strong> {selectedAccount?.name}</p>
+          <p><strong>Email:</strong> {selectedAccount?.email}</p>
+          <p><strong>Contact Number:</strong> {selectedAccount?.phone}</p>
+          <p><strong>School:</strong> {selectedAccount?.school || selectedAccount?.section}</p>
+          <p><strong>School Address:</strong> {selectedAccount?.address}</p>
+        </div>
+      </RegisterInformation>
+
+      {/* ✅ Delete Account Modal */}
+      <DeleteAccount
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        accountName={accountToDelete?.name}
+      />
+
+      {/* Toast Container */}
+      <ToastContainer position="top-right" theme="colored" />
+    </div>
+  );
+};
+
+export default AccountControl;

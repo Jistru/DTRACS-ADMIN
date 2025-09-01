@@ -1,0 +1,188 @@
+/* Base row (all tabs use grid) */
+.account-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+  transition: background-color 0.2s ease;
+}
+
+/* Designation adds a middle column */
+.account-item.designation {
+  grid-template-columns: 1fr minmax(150px, 200px) auto;
+  max-height: 48px;
+}
+
+/* Filter */
+.account-filter {
+  margin: 16px 0;
+}
+
+/* List spacing */
+.account-list {
+  margin-top: 16px;
+}
+
+/* Left group */
+.account-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* Avatar - Dynamic color from JS */
+.account-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.account-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.account-name {
+  font-weight: 600;
+  margin: 0;
+}
+
+.account-meta {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+/* Middle column (designation only) */
+.account-section {
+  font-size: 0.92rem;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  justify-self: center;
+  align-self: center;
+}
+
+/* Right column: action container */
+.account-action {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+}
+
+/* Button container */
+.account-action .inspect-btn,
+.account-action .edit-btn,
+.account-action .delete-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  outline: none;
+}
+
+/* Dropdown select */
+.edit-select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  font-size: 0.92rem;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.edit-select:hover,
+.edit-select:focus {
+  border-color: #203061;
+}
+
+/* Save button - matches Edit exactly */
+.save-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: white;
+  color: #203061;
+  border: 1.5px solid #203061;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.save-btn:hover {
+  background: #203061;
+  color: white;
+}
+
+/* Verification + Designation buttons (blue) */
+.account-action .inspect-btn,
+.account-action .edit-btn {
+  border: 1.5px solid #203061;
+  color: #203061;
+}
+
+.account-action .inspect-btn:hover,
+.account-action .edit-btn:hover {
+  background: #203061;
+  color: white;
+}
+
+/* Termination button (red) */
+.account-action .delete-btn {
+  border: 1.5px solid #d9534f;
+  color: #d9534f;
+}
+
+.account-action .delete-btn:hover {
+  background: #d9534f;
+  color: white;
+}
+
+/* Filter container */
+.account-filter {
+  margin-top: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Minimal dropdown */
+.account-filter select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.account-filter select:hover,
+.account-filter select:focus {
+  border-color: #203061;
+}
