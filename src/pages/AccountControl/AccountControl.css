@@ -137,6 +137,33 @@
   color: white;
 }
 
+/* Cancel button */
+.cancel-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: white;
+  color: #666;
+  border: 1.5px solid #ccc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.cancel-btn:hover {
+  background: #ffcdd2;
+  color: #c62828;
+  border-color: #c62828;
+  transform: none;
+}
+
+/* Edit action buttons group */
+.edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
 /* Verification + Designation buttons (blue) */
 .account-action .inspect-btn,
 .account-action .edit-btn {

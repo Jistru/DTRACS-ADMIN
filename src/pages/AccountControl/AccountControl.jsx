@@ -252,12 +252,31 @@ const AccountControl = () => {
                 </button>
               )}
               {activeTab === "designation" && (
-                <button
-                  className={editingId === acc.id ? "save-btn" : "edit-btn"}
-                  onClick={editingId === acc.id ? () => handleSaveClick(acc.id) : () => handleEditClick(acc.id)}
-                >
-                  {editingId === acc.id ? "Save" : "Edit"}
-                </button>
+                <>
+                  {editingId === acc.id ? (
+                    <div className="edit-actions">
+                      <button
+                        className="save-btn"
+                        onClick={() => handleSaveClick(acc.id)}
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="cancel-btn"
+                        onClick={() => setEditingId(null)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="edit-btn"
+                      onClick={() => handleEditClick(acc.id)}
+                    >
+                      Edit
+                    </button>
+                  )}
+                </>
               )}
             </div>
           </div>
