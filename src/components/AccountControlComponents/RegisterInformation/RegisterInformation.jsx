@@ -1,4 +1,4 @@
-// src/components/AccountControlComponents/RegisterInformation.jsx
+// src/components/AccountControlComponents/RegisterInformation/RegisterInformation.jsx
 import React from 'react';
 import './RegisterInformation.css';
 
@@ -8,8 +8,18 @@ const RegisterInformation = ({ isOpen, onClose, title, children, onDeny, onVerif
   return (
     <div className="register-info-overlay">
       <div className="register-info-content">
+        {/* X Close Button */}
+        <button className="register-info-close-btn" onClick={onClose} aria-label="Close">
+          ×
+        </button>
+
+        {/* Title */}
         <h2>{title}</h2>
+
+        {/* Content */}
         {children}
+
+        {/* Action Buttons */}
         <div className="register-info-actions">
           <button className="deny-btn" onClick={onDeny}>
             Deny

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import AccountTabs from "../../components/AccountControlComponents/AccountTabs/AccountTabs";
 import RegisterInformation from "../../components/AccountControlComponents/RegisterInformation/RegisterInformation";
-import DeleteAccount from "../../components/AccountControlComponents/DeleteAccount/DeleteAccount";
+import ConfirmDeleteWithPassword from "../../components/AccountControlComponents/ConfirmDeleteWithPassword/ConfirmDeleteWithPassword";
 import "./AccountControl.css";
 
 // Toastify
@@ -52,7 +52,7 @@ const mockAccounts = {
     { id: 6, name: "Ana Cruz", school: "San Antonio HS", type: "Focal" },
   ],
   designation: [
-    { id: 7, name: "Isidra L. Galman", section: "School Management & Eval Section" },
+    { id: 7, name: "Isidra L. Galman", section: "School Management & Evaluation Section" },
     { id: 8, name: "Edward R. Manuel", section: "Planning & Research Section" },
     { id: 9, name: "Charles M. Patio", section: "Planning & Research Section" },
     { id: 10, name: "Artnafe N. Ode", section: "Planning & Research Section" },
@@ -66,7 +66,7 @@ const mockAccounts = {
 
 // Mock sections for dropdown
 const sections = [
-  "School Management & Eval Section",
+  "School Management & Evaluation Section",
   "Planning & Research Section",
   "Human Resource Development Section",
   "Social Mobilization and Networking Section",
@@ -127,18 +127,13 @@ const AccountControl = () => {
   };
 
   const handleDeny = () => {
-    handleCloseModal();
+    toast.warn(`${selectedAccount?.name} has been denied.`, { autoClose: 2000 });
+    setTimeout(handleCloseModal, 100);
   };
 
   const handleVerify = () => {
     toast.success("Account verified!", { autoClose: 1000 });
     setTimeout(handleCloseModal, 100);
-  };
-
-  const handleDeleteConfirm = () => {
-    toast.error(`${accountToDelete?.name} has been deleted.`);
-    setIsDeleteModalOpen(false);
-    setAccountToDelete(null);
   };
 
   const handleEditClick = (id) => {
@@ -301,11 +296,18 @@ const AccountControl = () => {
         </div>
       </RegisterInformation>
 
-      {/* ✅ Delete Account Modal */}
-      <DeleteAccount
+      {/* Password-Protected Delete Confirmation */}
+      <ConfirmDeleteWithPassword
         isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleDeleteConfirm}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setAccountToDelete(null);
+        }}
+        onConfirm={() => {
+          toast.error(`${accountToDelete?.name} has been deleted.`);
+          setIsDeleteModalOpen(false);
+          setAccountToDelete(null);
+        }}
         accountName={accountToDelete?.name}
       />
 
